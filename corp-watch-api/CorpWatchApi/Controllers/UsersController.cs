@@ -4,39 +4,42 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CorpWatchApi.Controllers
 {
-        [Route("api/[controller]")]
-        public class UsersController : Controller
+    [Route("api/[controller]")]
+    public class UsersController : Controller
     {
         private UserContext context;
+        private Auth Auth;
 
-        public UsersController(UserContext context)
+        public UsersController(UserContext context, Auth auth)
         {
             this.context = context;
+            this.Auth = auth;
+        
         }
 
-        //Get: api/Users/validation
-        [HttpGet("validation")]
-        public bool Get()
-        {
+        // //Get: api/Users/validation
+        // [HttpGet("validation")]
+        // public bool Get()
+        // {
 
-            return Auth.IsValidToken(Request.Headers["Authorization"]);
-        }
+        //     return Auth.IsValidToken(Request.Headers["Authorization"]);
+        // }
 
         // Post api/Users/register    
         [HttpPost("register")]
         public string Post([FromBody] User user)
         {
-            User foundUser = context.Users.SingleOrDefault<User>( u => u.Username == user.Username);
+            User foundUser = context.Users.SingleOrDefault<User>(u => u.Username == user.Username);
             if (foundUser != null)
             {
                 return "Username not available.";
             }
-            user.Salt = Auth.GenerateSalt();
-            user.Password = Auth.Hash(user.Password, user.Salt);
+            // user.Salt = Auth.GenerateSalt();
+            // user.Password = Auth.Hash(user.Password, user.Salt);
             context.Users.Add(user);
             context.SaveChanges();
             return Auth.GenerateJWT(user);
-            
+
         }
 
         [HttpPost("login")]
@@ -45,11 +48,11 @@ namespace CorpWatchApi.Controllers
             User foundUser = context.Users.SingleOrDefault<User>(
                 u => u.Username == user.Username && u.Password == Auth.Hash(user.Password, u.Salt)
             );
-        if (foundUser != null)
-        {
-            return Auth.GenerateJWT(foundUser);
-        }
-        return "Invalid Login Information.";
+            if (foundUser != null)
+            {
+                return Auth.GenerateJWT(foundUser);
+            }
+            return "Invalid Login Information.";
         }
     }
 }

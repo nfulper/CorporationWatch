@@ -8,32 +8,34 @@ class Login extends Component {
         this.handleChange = this.handleChange.bind(this);
         this.handleFormSubmit = this.handleFormSubmit.bind(this);
         this.Auth = new AuthService();
+        this.state = {};
     }
 
     render() {
-        return ( 
-        <div className = "center" >
-            <div className = "card" >
-            <h1 > Login </h1> 
-            
-            <form>
-            <input className = "form-item"
-            placeholder = "Username goes here..."
-            name = "username"
-            type = "text"
-            onChange = {this.handleChange} /> 
-            
-            <input className = "form-item"
-            placeholder = "Password goes here..."
-            name = "password"
-            type = "password"
-            onChange = {this.handleChange} />
+        return (
+            <div className="center">
+                <div className="card">
+                    <h1> Login </h1>
 
-            <input className = "form-submit"
-            value = "SUBMIT"
-            type = "submit" />
-            </form>
-            </div>
+                    <form>
+                        <input className="form-item"
+                            placeholder="Username goes here..."
+                            name="username"
+                            type="text"
+                            onChange={this.handleChange} />
+
+                        <input className="form-item"
+                            placeholder="Password goes here..."
+                            name="password"
+                            type="password"
+                            onChange={this.handleChange} />
+
+                        <input className="form-submit"
+                            value="SUBMIT"
+                            type="submit"
+                            onClick={this.handleFormSubmit} />
+                    </form>
+                </div>
             </div>
         );
     }
@@ -43,17 +45,17 @@ class Login extends Component {
             this.props.history.replace('/');
     }
 
-     handleFormSubmit(e) {
-         e.preventDefault();
+    handleFormSubmit(e) {
+        e.preventDefault();
 
-         this.Auth.login(this.state.username, this.state.password)
-             .then(res => {
-                 this.props.history.replace('/');
-             })
-             .catch(err => {
-                 alert(err);
-             })
-     }
+        this.Auth.login(this.state.username, this.state.password)
+            .then(res => {
+                this.props.history.replace('/');
+            })
+            .catch(err => {
+                alert(err);
+            })
+    }
 
     handleChange(e) {
         this.setState({

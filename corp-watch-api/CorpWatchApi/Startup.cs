@@ -6,7 +6,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using CorpWatchApi.Models;
 using Microsoft.AspNetCore.Mvc;
-
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace CorpWatchApi
 {
@@ -26,6 +28,19 @@ namespace CorpWatchApi
             services.AddDbContext<JobContext>(opt =>
                 opt.UseInMemoryDatabase("Job"));
 */
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options => {
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidateLifetime = true,
+                        ValidateIssuerSigningKey = true,
+                        ValidIssuer = Configuration["Jwt:Issuer"],
+                        ValidAudience = Configuration["Jwt:Issuer"],
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"]))
+                    };
+                });
             services.AddCors();
             services.AddMvc()
                     .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
@@ -43,10 +58,12 @@ namespace CorpWatchApi
                 {
                     options.UseSqlServer(connection);
                 });
+            services.AddTransient<Auth, Auth>();
         }
 
         public void Configure(IApplicationBuilder app)
         {
+            app.UseAuthentication();
             app.UseDefaultFiles();
             app.UseStaticFiles();
             app.UseCors(p => p.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader().AllowCredentials());

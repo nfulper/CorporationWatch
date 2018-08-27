@@ -1,36 +1,37 @@
-import React, {
-    Component
-} from 'react';
+import React, { Component } from 'react';
+import AuthService from './AuthService';
 
 class Employee extends Component {
     constructor() {
         super();
         this.state = {
-            Employee: {},
+            Employees: []
         };
+        this.auth = new AuthService();
     }
 
     componentWillMount() {
-        console.log("Executing component will mount.");
-        fetch('http://localhost:5000/api/Employee')
+        /*this.auth.*/fetch('http://localhost:5000/api/Employee')
             .then(results => {
                 return results.json();
             })
             .then(data => {
-                console.log("Mapping data.", data);
-                
                 this.setState({
-                    Employee: data
-                                });
-                console.log("state", this.state.Employee)
+                    Employees: data
+                });
             })
     }
 
     render() {
         return (
-
-            <div className = "container1" >
-           
+            <div className="container1" >
+                {this.state.Employees.map(e => (
+                    <div>
+                        <h3>{e.firstName} {e.lastName}</h3>
+                        <p>Jobs: {e.jobs}</p>
+                        <p>Department: {e.department}</p>
+                    </div>
+                ))}
             </div>
         )
     }

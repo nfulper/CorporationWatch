@@ -10,7 +10,7 @@ export default class AuthService {
 
     login(username, password) {
         // Get a token from api server using the fetch api
-        return this.fetch(`${this.domain}/login`, {
+        return this.fetch(`${this.domain}/Users/login`, {
             method: 'POST',
             body: JSON.stringify({
                 username,

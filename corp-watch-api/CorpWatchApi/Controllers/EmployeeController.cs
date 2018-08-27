@@ -2,11 +2,13 @@ using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
 using CorpWatchApi.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CorpWatchApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    //[Authorize]
     public class EmployeeController : Controller
     {
         ApplicationDbContext _db;
